@@ -7,6 +7,7 @@ package model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,11 +39,13 @@ public class Survivor implements Serializable {
     private char gender;
     @Column(name = "infected")
     private Boolean infected;
+    @Column(name = "created")
+    private Date created;
 
     public Survivor() {
     }
 
-    public Survivor(Integer idsurvivor, Integer age, Integer lonx, Integer lony, String name, char gender, Boolean infected) {
+    public Survivor(Integer idsurvivor, Integer age, Integer lonx, Integer lony, String name, char gender, Boolean infected, Date created) {
         this.idsurvivor = idsurvivor;
         this.age = age;
         this.lonx = lonx;
@@ -50,6 +53,7 @@ public class Survivor implements Serializable {
         this.name = name;
         this.gender = gender;
         this.infected = infected;
+        this.created = created;
     }
 
     public Integer getIdsurvivor() {
@@ -108,54 +112,11 @@ public class Survivor implements Serializable {
         this.infected = infected;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.idsurvivor);
-        hash = 67 * hash + Objects.hashCode(this.age);
-        hash = 67 * hash + Objects.hashCode(this.lonx);
-        hash = 67 * hash + Objects.hashCode(this.lony);
-        hash = 67 * hash + Objects.hashCode(this.name);
-        hash = 67 * hash + this.gender;
-        hash = 67 * hash + Objects.hashCode(this.infected);
-        return hash;
+    public Date getCreated(){
+    	return created;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Survivor other = (Survivor) obj;
-        if (this.gender != other.gender) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.idsurvivor, other.idsurvivor)) {
-            return false;
-        }
-        if (!Objects.equals(this.age, other.age)) {
-            return false;
-        }
-        if (!Objects.equals(this.lonx, other.lonx)) {
-            return false;
-        }
-        if (!Objects.equals(this.lony, other.lony)) {
-            return false;
-        }
-        if (!Objects.equals(this.infected, other.infected)) {
-            return false;
-        }
-        return true;
+    public void setCreated(Date created){
+    	this.created = created;
     }
-
-    
 }

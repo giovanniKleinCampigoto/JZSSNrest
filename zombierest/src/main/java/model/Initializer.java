@@ -30,15 +30,14 @@ public class Initializer {
         sc = new SurvivorCrud();
         survivors = new ArrayList<>();
 
-        survivors.addAll(sc.fetchSurvivorsFromDB());
+        //survivors.addAll(sc.fetchSurvivorsFromDB());
 
-        //sc.saveSurvivors();
-        //sc.saveInventories();
+        sc.saveSurvivors();
+        sc.saveInventories();
        
-       
-        for (int i = 0; i < 3; i++) {
+        /*for (int i = 0; i < 3; i++) {
             functions.flagInfectedSurvivor(survivors.get(i), survivors.get(3));
-        }
+        }*/
          
         //functions.trade(survivors.get(0),survivors.get(2),"water",1,"meds",2);
         /*percentageNon_infected = functions.percentage(survivors.size());

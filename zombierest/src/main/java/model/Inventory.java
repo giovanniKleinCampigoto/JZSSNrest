@@ -7,6 +7,7 @@ package model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +37,8 @@ public class Inventory implements Serializable {
     private Integer meds;
     @Column(name = "ammo")
     private Integer ammo;
-
+    
+    private Date created;
     
     @OneToOne
     @JoinColumn(name = "idsurvivor")
@@ -93,50 +95,11 @@ public class Inventory implements Serializable {
         this.survivor = survivor;
     }
     
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.inventoryid);
-        hash = 53 * hash + Objects.hashCode(this.water);
-        hash = 53 * hash + Objects.hashCode(this.food);
-        hash = 53 * hash + Objects.hashCode(this.meds);
-        hash = 53 * hash + Objects.hashCode(this.ammo);
-        hash = 53 * hash + Objects.hashCode(this.survivor);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Inventory other = (Inventory) obj;
-        if (!Objects.equals(this.inventoryid, other.inventoryid)) {
-            return false;
-        }
-        if (!Objects.equals(this.water, other.water)) {
-            return false;
-        }
-        if (!Objects.equals(this.food, other.food)) {
-            return false;
-        }
-        if (!Objects.equals(this.meds, other.meds)) {
-            return false;
-        }
-        if (!Objects.equals(this.ammo, other.ammo)) {
-            return false;
-        }
-        if (!Objects.equals(this.survivor, other.survivor)) {
-            return false;
-        }
-        return true;
+    public Date getCreated(){
+    	return created;
     }
     
-    
+    public void setCreated(Date created){
+    	this.created = created;
+    }
 }
