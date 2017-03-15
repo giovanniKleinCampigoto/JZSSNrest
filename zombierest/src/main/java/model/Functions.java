@@ -40,15 +40,15 @@ public class Functions {
             array.add(surv);
             surv = null;
             if (array.size() == 3) {
+            	sc = new SurvivorCrud();
 
                 flaggedSurvivor.setInfected(true);
                 System.out.println(flaggedSurvivor.getName() + " is infected...");
-
+                
                 inventory = sc.getInventoryById(flaggedSurvivor.getIdsurvivor());                
                 int points = inventory.getAmmo() + inventory.getFood() * 3 + inventory.getMeds() * 2 + inventory.getWater() * 4;
 
                 infected.add(points);
-                sc = new SurvivorCrud();
                 sc.updateSurvivor(flaggedSurvivor);
                 sc.deleteSurvivorInventory(flaggedSurvivor);
 

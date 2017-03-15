@@ -37,7 +37,7 @@ public class Inventory implements Serializable {
     private Integer meds;
     @Column(name = "ammo")
     private Integer ammo;
-    
+    @Column(name = "created")
     private Date created;
     
     @OneToOne

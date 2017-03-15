@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
+
+import javax.persistence.TypedQuery;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -97,10 +100,9 @@ public class SurvivorCrud {
 
         try {
             t = session.beginTransaction();
-            list = session.createCriteria(Survivor.class).list();
-
-            t.commit();
-
+            TypedQuery<Survivor> query = session.createQuery("FROM Survivor");
+            list = query.getResultList();
+            
         } catch (HibernateException ex) {
             if (t != null) {
                 t.rollback();
@@ -192,11 +194,9 @@ public class SurvivorCrud {
         Inventory inventory = null;
 
         try {
+        	
             t = session.beginTransaction();
-            String queryString = "from Inventory where idsurvivor = :id";
-            Query query = session.createQuery(queryString);
-            query.setInteger("id", idsurvivor);
-            inventory = (Inventory) query.uniqueResult();
+            inventory =  (Inventory) session.createQuery("from Inventory where idsurvivor = :id").setParameter("id", idsurvivor).uniqueResult();
         } catch (HibernateException ex) {
             if (t != null) {
                 t.rollback();
