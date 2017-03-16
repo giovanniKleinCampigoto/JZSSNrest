@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util;
+package com.giovanni.zombierest.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,8 +15,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import model.Inventory;
-import model.Survivor;
+import com.giovanni.zombierest.model.Inventory;
+import com.giovanni.zombierest.model.Survivor;
 
 /**
  * A class that reads .json files

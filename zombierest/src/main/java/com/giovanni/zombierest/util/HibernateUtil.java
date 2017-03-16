@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util;
+package com.giovanni.zombierest.util;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
