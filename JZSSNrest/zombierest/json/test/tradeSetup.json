@@ -1,6 +1,14 @@
-{
-	"tradeWTT":"water",
-	"ammountWTT":1,
-	"tradeT":"meds",
-	"ammountT":2
-}
+[
+	{
+		"water":0,
+		"food":0,
+		"meds":1,
+		"ammo":1
+	},
+	{
+		"water":0,
+		"food":0,
+		"meds":0,
+		"ammo":3
+	}
+]

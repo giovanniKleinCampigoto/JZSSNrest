@@ -82,6 +82,27 @@ public class JSONUtil {
 		return inventory;
 	}
 	
+	
+	
+	
+	public Inventory handleJsonTradeInventory(String json, Survivor survivor) throws JSONException {
+		JSONObject jsonInventory = new JSONObject(json);
+
+		Integer water = jsonInventory.getInt("water");
+		Integer food = jsonInventory.getInt("food");
+		Integer meds = jsonInventory.getInt("meds");
+		Integer ammo = jsonInventory.getInt("ammo");
+		Inventory inventory = new Inventory();
+		inventory.setAmmo(ammo);
+		inventory.setFood(food);
+		inventory.setMeds(meds);
+		inventory.setWater(water);
+		inventory.setSurvivor(survivor);
+
+		return inventory;
+	}
+
+	
 
 	/**
 	 * Parses given string on a json entry
@@ -131,5 +152,15 @@ public class JSONUtil {
 		
 		return jsonArray;
 	}
+	
+	
+	public JSONArray parseJsonArrayResponse(String json) throws JSONException {
+		JSONParser parser = new JSONParser();
+		
+		JSONArray jsonArray = new JSONArray(json);
+		
+		return jsonArray;
+	}
+
 
 }

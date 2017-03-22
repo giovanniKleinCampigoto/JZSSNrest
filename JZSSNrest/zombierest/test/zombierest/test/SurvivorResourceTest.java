@@ -295,9 +295,9 @@ public class SurvivorResourceTest extends JerseyTest {
 			Response output = target("/survivors").request()
 					.post(Entity.entity(jsonArray.get(i).toString(), MediaType.APPLICATION_JSON));
 		}
-
+		
 		survivors.addAll(getSurvivorsList());
-
+	
 		// Make a put request to the endpoint
 		// /survivors/survivorId/trade/traderId with the trade setup...
 		Response output = target("/survivors/" + String.valueOf(survivors.get(0).getIdsurvivor()) + "/trade/"

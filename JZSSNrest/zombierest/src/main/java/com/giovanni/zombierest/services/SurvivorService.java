@@ -1,5 +1,7 @@
 package com.giovanni.zombierest.services;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import com.giovanni.zombierest.model.Inventory;
 import com.giovanni.zombierest.model.Survivor;
@@ -20,7 +24,7 @@ import com.giovanni.zombierest.util.HibernateUtil;
 import com.giovanni.zombierest.util.JSONUtil;
 
 public class SurvivorService {
-	
+
 	private static Map<String, Integer> map = new HashMap<>();
 	private static ArrayList<Integer> array = new ArrayList<>();
 	private static InventoryService is;
@@ -43,7 +47,7 @@ public class SurvivorService {
 		survivor = ju.handleJsonSurvivor(json);
 		inventory = ju.handleJsonInventory(json, survivor);
 		survivor.setLostpoints(0);
-		
+
 		util = HibernateUtil.getInstance();
 		Session session = util.getSession();
 
@@ -62,8 +66,7 @@ public class SurvivorService {
 		}
 		return survivor;
 	}
-	
-	
+
 	public List<Survivor> getAllSurvivors() {
 
 		HibernateUtil instance;
@@ -89,7 +92,6 @@ public class SurvivorService {
 
 		return list;
 	}
-
 
 	/**
 	 * Fetches all the survivors from the database
@@ -121,8 +123,7 @@ public class SurvivorService {
 
 		return list;
 	}
-	
-	
+
 	public List<Survivor> getAllInfected() {
 
 		HibernateUtil instance;
@@ -148,7 +149,6 @@ public class SurvivorService {
 
 		return list;
 	}
-
 
 	/**
 	 * Fetch a survivor by id...
@@ -304,79 +304,147 @@ public class SurvivorService {
 	}
 
 	/**
-	 *  Trade function (You can only trade one type of item each time) eg: (water x meds) or (meds x ammo),
-	 *	is not possible yet doing (1 water => 1 food and 1 ammo)
+	 * Trade function (You can only trade one type of item each time) eg: (water
+	 * x meds) or (meds x ammo), is not possible yet doing (1 water => 1 food
+	 * and 1 ammo)
+	 * 
 	 * @param idWantsToTrade
 	 * @param idTrader
 	 * @param json
 	 * @return
 	 * @throws JSONException
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws FileNotFoundException
 	 */
-	public String trade(int idWantsToTrade, int idTrader, String json) throws JSONException {
+	public String trade(int idWantsToTrade, int idTrader, String json)
+			throws JSONException, FileNotFoundException, IOException, ParseException {
 		ju = new JSONUtil();
 		is = new InventoryService();
-		
-		String keyTradeWTT = ju.parseJsonString(json, "tradeWTT");
-		String keyTradeT = ju.parseJsonString(json, "tradeT");
-		int ammountWTT = ju.parseJsonInteger(json, "ammountWTT");
-		int ammountT = ju.parseJsonInteger(json, "ammountT");
-		
-		Inventory invT, invWTT;
-		initializeTable(map);
-		String message = "";
-		Survivor trader = getSurvivor(idTrader);
-		Survivor wantsToTrade = getSurvivor(idWantsToTrade);
+		String message = " ";
+		Inventory trade_inventory1, trade_inventory2;
 
-		
-		invT = is.getInventory(trader.getIdsurvivor());
-		invWTT = is.getInventory(wantsToTrade.getIdsurvivor());
+		trade_inventory1 = ju.handleJsonTradeInventory(ju.parseJsonArrayResponse(json).get(0).toString(),
+				getSurvivor(idTrader));
+		trade_inventory2 = ju.handleJsonTradeInventory(ju.parseJsonArrayResponse(json).get(1).toString(),
+				getSurvivor(idWantsToTrade));
 
-		int pointsT, pointsWTT;
-
-		// verifies items ammount in Trader inventory
-		if (ammountT > is.getItemsQuantity(invT, keyTradeT)) {
-			message = "Trader doesen't have " + ammountT + " of " + keyTradeT;			
-			// verifies items ammount in WTT inventory
-
-		} else if (ammountWTT > is.getItemsQuantity(invWTT, keyTradeWTT)) {
-			message = "Want's to trade doesen't have " + ammountWTT + " of " + keyTradeWTT;
+		if (!pointsAreEqual(trade_inventory1, trade_inventory2)) {
+			message = "Points doesen't match, check the trade file...";
 		} else {
-			pointsT = ammountT * map.get(keyTradeT);
-			pointsWTT = ammountWTT * map.get(keyTradeWTT);
 
-			if (pointsT == pointsWTT) {
+			Inventory invT, invWTT;
 
-				int tradedAmmountT, tradedAmmountWTT, recievedAmmountT, recievedAmmountWTT;
+			Survivor trader = getSurvivor(idTrader);
+			Survivor wantsToTrade = getSurvivor(idWantsToTrade);
 
-				
-				
-				tradedAmmountWTT = Math.abs(is.getItemsQuantity(invWTT, keyTradeWTT) - ammountWTT); //WATER
-				
-				tradedAmmountT = Math.abs(is.getItemsQuantity(invT, keyTradeT) - ammountT); //meds 
-				
-				is.setTradeInventory(invT, keyTradeT, tradedAmmountT);				
-				is.setTradeInventory(invWTT, keyTradeWTT, tradedAmmountWTT);
-				
-				recievedAmmountWTT = Math.abs(is.getItemsQuantity(invWTT, keyTradeT) + ammountT);				
-				recievedAmmountT = Math.abs(is.getItemsQuantity(invT, keyTradeWTT) + ammountWTT);
-				
-				is.setTradeInventory(invT, keyTradeWTT, recievedAmmountT);				
-				is.setTradeInventory(invWTT, keyTradeT, recievedAmmountWTT);
+			invT = is.getInventory(trader.getIdsurvivor());
+			invWTT = is.getInventory(wantsToTrade.getIdsurvivor());
 
-				message = "recievedammountT(tex) " + recievedAmmountT +  " recievedammountT(ajax) " + 
-				recievedAmmountWTT + " invT(tex): " + invT.getWater() + " invWTT (ajax)" + invWTT.getMeds();
-				
-				is.updateInventory(invWTT);
-				is.updateInventory(invT);
+			// Method that verifies the amount of resources on the inventories,
+			// based on what is being sent on trade file
+			// If the amount is greater than the survivor inventory, trade gets
+			// blocked..
+			message = verifyAmmount("Trade failed because... ", trade_inventory1, trade_inventory2, invT, invWTT,
+					trader, wantsToTrade);
 
-				message = "Trade is completed...";
-			}
-			else{
-				message = "Trading " + keyTradeWTT + " " + ammountWTT + " for " + keyTradeT + " " + ammountT + " is not possible, because points doesen't match";  
-			}
+			makeTrade(trade_inventory1, trade_inventory2, invT, invWTT);
+
+			is.updateInventory(invWTT);
+			is.updateInventory(invT);
+
+			message = "Trade is completed...";
 		}
 		return message;
+	}
 
+	private void makeTrade(Inventory trade_inventory1, Inventory trade_inventory2, Inventory invT, Inventory invWTT) {
+		int[] tradedAmmountWTT = new int[4];
+		int[] tradedAmmountT = new int[4];
+		int[] recievedAmmountWTT = new int[4];
+		int[] recievedAmmountT = new int[4];
+
+		tradedAmmountWTT[0] = Math.abs(is.getItemsQuantity(invWTT, "water") - trade_inventory2.getWater());
+		tradedAmmountWTT[1] = Math.abs(is.getItemsQuantity(invWTT, "food") - trade_inventory2.getFood());
+		tradedAmmountWTT[2] = Math.abs(is.getItemsQuantity(invWTT, "meds") - trade_inventory2.getMeds());
+		tradedAmmountWTT[3] = Math.abs(is.getItemsQuantity(invWTT, "ammo") - trade_inventory2.getAmmo());
+
+		tradedAmmountT[0] = Math.abs(is.getItemsQuantity(invT, "water") - trade_inventory1.getWater());
+		tradedAmmountT[1] = Math.abs(is.getItemsQuantity(invT, "food") - trade_inventory1.getFood());
+		tradedAmmountT[2] = Math.abs(is.getItemsQuantity(invT, "meds") - trade_inventory1.getMeds());
+		tradedAmmountT[3] = Math.abs(is.getItemsQuantity(invT, "ammo") - trade_inventory1.getAmmo());
+
+		is.setTradeInventory(invWTT, "water", tradedAmmountWTT[0]);
+		is.setTradeInventory(invWTT, "food", tradedAmmountWTT[1]);
+		is.setTradeInventory(invWTT, "meds", tradedAmmountWTT[2]);
+		is.setTradeInventory(invWTT, "ammo", tradedAmmountWTT[3]);
+
+		is.setTradeInventory(invT, "water", tradedAmmountT[0]);
+		is.setTradeInventory(invT, "food", tradedAmmountT[1]);
+		is.setTradeInventory(invT, "meds", tradedAmmountT[2]);
+		is.setTradeInventory(invT, "ammo", tradedAmmountT[3]);
+
+		recievedAmmountWTT[0] = Math.abs(is.getItemsQuantity(invWTT, "water") + trade_inventory1.getWater());
+		recievedAmmountWTT[1] = Math.abs(is.getItemsQuantity(invWTT, "food") + trade_inventory1.getFood());
+		recievedAmmountWTT[2] = Math.abs(is.getItemsQuantity(invWTT, "meds") + trade_inventory1.getMeds());
+		recievedAmmountWTT[3] = Math.abs(is.getItemsQuantity(invWTT, "ammo") + trade_inventory1.getAmmo());
+
+		recievedAmmountT[0] = Math.abs(is.getItemsQuantity(invT, "water") + trade_inventory2.getWater());
+		recievedAmmountT[1] = Math.abs(is.getItemsQuantity(invT, "food") + trade_inventory2.getFood());
+		recievedAmmountT[2] = Math.abs(is.getItemsQuantity(invT, "meds") + trade_inventory2.getMeds());
+		recievedAmmountT[3] = Math.abs(is.getItemsQuantity(invT, "ammo") + trade_inventory2.getAmmo());
+
+		is.setTradeInventory(invT, "water", recievedAmmountT[0]);
+		is.setTradeInventory(invT, "food", recievedAmmountT[1]);
+		is.setTradeInventory(invT, "meds", recievedAmmountT[2]);
+		is.setTradeInventory(invT, "ammo", recievedAmmountT[3]);
+
+		is.setTradeInventory(invWTT, "water", recievedAmmountWTT[0]);
+		is.setTradeInventory(invWTT, "food", recievedAmmountWTT[1]);
+		is.setTradeInventory(invWTT, "meds", recievedAmmountWTT[2]);
+		is.setTradeInventory(invWTT, "ammo", recievedAmmountWTT[3]);
+	}
+
+	private String verifyAmmount(String message, Inventory trade_inventory1, Inventory trade_inventory2, Inventory invT,
+			Inventory invWTT, Survivor trader, Survivor wantsToTrade) {
+		if (!(trade_inventory1.getWater() <= invT.getWater() && trade_inventory1.getFood() <= invT.getFood()
+				&& trade_inventory1.getMeds() <= invT.getMeds() && trade_inventory1.getAmmo() <= invT.getAmmo())) {
+			message += trader.getName() + " doesen't have the necessary ammount of resources,  ";
+		} else {
+			message = "";
+		}
+
+		if (!(trade_inventory2.getWater() <= invWTT.getWater() && trade_inventory2.getFood() <= invWTT.getFood()
+				&& trade_inventory2.getMeds() <= invWTT.getMeds() && trade_inventory2.getAmmo() <= invWTT.getAmmo())) {
+			message += wantsToTrade.getName() + " doesen't have the necessary ammount of resources";
+		} else {
+			message = "";
+		}
+		return message;
+	}
+
+	private Boolean pointsAreEqual(Inventory trade_inventory1, Inventory trade_inventory2) {
+		long points1 = 0;
+		long points2 = 0;
+
+		if (trade_inventory1.getWater() > 0 || trade_inventory2.getWater() > 0) {
+			points1 += trade_inventory1.getWater() * 4;
+			points2 += trade_inventory2.getWater() * 4;
+		}
+		if (trade_inventory1.getFood() > 0 || trade_inventory2.getFood() > 0) {
+			points1 += trade_inventory1.getFood() * 3;
+			points2 += trade_inventory2.getFood() * 3;
+		}
+		if (trade_inventory1.getMeds() > 0 || trade_inventory2.getMeds() > 0) {
+			points1 += trade_inventory1.getMeds() * 2;
+			points2 += trade_inventory2.getMeds() * 2;
+		}
+		if (trade_inventory1.getAmmo() > 0 || trade_inventory2.getAmmo() > 0) {
+			points1 += trade_inventory1.getAmmo();
+			points2 += trade_inventory2.getAmmo();
+		}
+
+		return points1 == points2;
 	}
 
 	public void initializeTable(Map map) {
