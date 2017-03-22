@@ -68,19 +68,31 @@ Note: Inventories cannot be updated, via PUT HTTP method...
 
 Do a PUT request to the endpoint, http://localhost:8080/zombierest/webapi/survivors/{survivorId}/reportinfected/{infectedId}
 
-- Trade Items (Still under optimization because traders can only trade 1 type of item)
+- Trade Items
 
 Do a PUT request to the endpoint, http://localhost:8080/zombierest/webapi/survivors/{survivorId}/trade/{traderId}
 With the following .json structure:
 ```
-{
-	"tradeWTT":"water",
-	"ammountWTT":1,
-	"tradeT":"meds",
-	"ammountT":2
-}
+[
+	{
+		"water":0,
+		"food":0,
+		"meds":1,
+		"ammo":1
+	},
+	{
+		"water":0,
+		"food":0,
+		"meds":0,
+		"ammo":3
+	}
+]
 ```
 
 - Reports
 
 Do a GET request to the endpoint, http://localhost:8080/zombierest/webapi/reports
+
+- About JSON
+
+Example of JSON data is under the /json directory
