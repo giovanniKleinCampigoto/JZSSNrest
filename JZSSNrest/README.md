@@ -13,7 +13,8 @@ The REST client used was POSTMan
 
 Documentation (JAVADOC) on methods is avalible at /docs, index.html.
 
-# To deploy the application
+# To deploy the application (IDE)
+
 - Install eclipse IDE, with jdk v 1.8 or superior;
 - Install tomcat 9 server;
 - Install MySQL Workbench;
@@ -30,7 +31,7 @@ if you run the JUnit tests client tests were generated.
 
 All the HTTP methods can be done in POSTman as well if you follow the structure of the json files.
 
-- Add survivors to the database
+# Add survivors to the database
 
 Do a POST request to the endpoint, http://localhost:8080/zombierest/webapi/survivors.
 With the following .json structure:
@@ -55,7 +56,7 @@ With the following .json structure:
 Inventories are declared upon survivor creation
     
 
-- Update survivor location
+# Update survivor location
 
 Do a PUT request to the endpoint, http://localhost:8080/zombierest/webapi/survivors/{survivorId}.
 With the following .json structure:
@@ -73,11 +74,12 @@ With the following .json structure:
 
 Note: Inventories cannot be updated, via PUT HTTP method...
 
-- Flag survivor as infected
+# Flag survivor as infected
 
 Do a PUT request to the endpoint, http://localhost:8080/zombierest/webapi/survivors/{survivorId}/reportinfected/{infectedId}
+Send empty PUT body!
 
-- Trade Items
+# Trade Items
 
 Do a PUT request to the endpoint, http://localhost:8080/zombierest/webapi/survivors/{survivorId}/trade/{traderId}
 With the following .json structure:
@@ -98,7 +100,7 @@ With the following .json structure:
 ]
 ```
 
-- Reports
+# Reports
 
 Do a GET request to the endpoint, http://localhost:8080/zombierest/webapi/reports
 
