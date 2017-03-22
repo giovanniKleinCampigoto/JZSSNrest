@@ -1,0 +1,14 @@
+{			
+	"name":"ajax(francis)",
+	"age":45,
+	"gender":"M",
+	"lonx":1000,
+	"lony":-1000,
+	"infected":false,
+	"inventory":{
+		"water":1,
+		"food":5,
+		"meds":15,
+		"ammo":50
+	}	
+}
