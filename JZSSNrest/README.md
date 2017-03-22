@@ -20,7 +20,8 @@ Documentation (JAVADOC) on methods is avalible at /docs, index.html.
 - Clone this repository;
 - Import project to eclipse (File > Import... > Project with existing files); 
 - Import DB backup to MySQL Workbench located in the db folder (File > Import > Reverse Engineer );
-- Run the project on server or run the JUnit tests, in the tests package.
+- Run the project on server
+- To Run the tests uncomment the last dependency at pom.xml and Run the class SurvivorResourceTest under /test directory as JUnit test.
 
 # In regards to the api
 
@@ -101,6 +102,6 @@ With the following .json structure:
 
 Do a GET request to the endpoint, http://localhost:8080/zombierest/webapi/reports
 
-- About JSON
+# About JSON
 
 Example of JSON data is under the /json directory
