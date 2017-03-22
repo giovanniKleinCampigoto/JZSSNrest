@@ -304,15 +304,15 @@ public class SurvivorService {
 	}
 
 	/**
-	 * 
-	 * @param idWantsToTrade
-	 * @param idTrader
-	 * @param json
-	 * @return
-	 * @throws JSONException
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
+	 * Trade function
+	 * @param idWantsToTrade id of the survivor who want's to trade
+	 * @param idTrader id of the trader
+	 * @param json json file with data of the trade
+	 * @return string declarating the state of the trade
+	 * @throws JSONException bad json
+	 * @throws FileNotFoundException self explanatory
+	 * @throws IOException something went wrong with I/O
+	 * @throws ParseException bad json
 	 */
 	public String trade(int idWantsToTrade, int idTrader, String json)
 			throws JSONException, FileNotFoundException, IOException, ParseException {
@@ -355,6 +355,13 @@ public class SurvivorService {
 		return message;
 	}
 
+	/**
+	 *  Makes the trade
+	 * @param trade_inventory1 trade inventory in the first position of the file
+	 * @param trade_inventory2 trade inventory in the seccond position of the file
+	 * @param invT inventory of the trader
+	 * @param invWTT inventory of the survivor who want's to trade
+	 */
 	private void makeTrade(Inventory trade_inventory1, Inventory trade_inventory2, Inventory invT, Inventory invWTT) {
 		int[] tradedAmmountWTT = new int[4];
 		int[] tradedAmmountT = new int[4];
@@ -402,6 +409,17 @@ public class SurvivorService {
 		is.setTradeInventory(invWTT, "ammo", recievedAmmountWTT[3]);
 	}
 
+	/**
+	 * Verifies ammount of resources
+	 * @param message simple message
+	 * @param trade_inventory1 trade inventory in the first position of the file
+	 * @param trade_inventory2 trade inventory in the seccond position of the file
+	 * @param invT inventory of the trader
+	 * @param invWTT inventory of the survivor who want's to trade
+	 * @param trader trader
+	 * @param wantsToTrade survivor who wan'ts to trade
+	 * @return
+	 */
 	private String verifyAmmount(String message, Inventory trade_inventory1, Inventory trade_inventory2, Inventory invT,
 			Inventory invWTT, Survivor trader, Survivor wantsToTrade) {
 		if (!(trade_inventory1.getWater() <= invT.getWater() && trade_inventory1.getFood() <= invT.getFood()
@@ -420,6 +438,12 @@ public class SurvivorService {
 		return message;
 	}
 
+	/**
+	 * Verifies if points are equal
+	 * @param trade_inventory1 trade inventory in the first position of the file
+	 * @param trade_inventory2 trade inventory in the seccond position of the file
+	 * @return returns if points are equal or not
+	 */
 	private Boolean pointsAreEqual(Inventory trade_inventory1, Inventory trade_inventory2) {
 		long points1 = 0;
 		long points2 = 0;
@@ -442,13 +466,6 @@ public class SurvivorService {
 		}
 
 		return points1 == points2;
-	}
-
-	public void initializeTable(Map map) {
-		map.put("water", 4);
-		map.put("food", 3);
-		map.put("meds", 2);
-		map.put("ammo", 1);
 	}
 
 }
