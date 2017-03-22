@@ -304,18 +304,15 @@ public class SurvivorService {
 	}
 
 	/**
-	 * Trade function (You can only trade one type of item each time) eg: (water
-	 * x meds) or (meds x ammo), is not possible yet doing (1 water => 1 food
-	 * and 1 ammo)
 	 * 
 	 * @param idWantsToTrade
 	 * @param idTrader
 	 * @param json
 	 * @return
 	 * @throws JSONException
-	 * @throws ParseException
-	 * @throws IOException
 	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
 	 */
 	public String trade(int idWantsToTrade, int idTrader, String json)
 			throws JSONException, FileNotFoundException, IOException, ParseException {
