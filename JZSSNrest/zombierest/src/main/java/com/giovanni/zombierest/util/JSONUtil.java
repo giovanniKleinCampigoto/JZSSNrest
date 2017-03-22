@@ -113,7 +113,15 @@ public class JSONUtil {
 		return integer;
 	}
 	
-	
+	/**
+	 * Parses a JSONArray for the test class
+	 * @param path path to the archive
+	 * @return A JsonArray with all the JSONObjects
+	 * @throws FileNotFoundException self explanatory
+	 * @throws IOException something went wrong with I/O
+	 * @throws ParseException bad json
+	 * @throws JSONException bad json
+	 */
 	public JSONArray parseJsonArray(String path) throws FileNotFoundException, IOException, ParseException, JSONException{
 		JSONParser parser = new JSONParser();
 

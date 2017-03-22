@@ -43,12 +43,23 @@ public class SurvivorResource {
 	Survivor survivor;
 	Inventory inventory;
 	
+	/**
+	 * POST method for creating a survivor
+	 * @param json json given by client
+	 * @return returns the created survivor
+	 * @throws JSONException bad json file
+	 */
 	@POST
 	public Survivor createSurvivor(String json) throws JSONException{
 		Survivor survivor = ss.createSurvivor(json);
 		return survivor;
 	}
 	
+	/**
+	 * Fetch all the survivors
+	 * @param survivorFilterBean filters path params on the uri
+	 * @return return a list of all survivors 
+	 */
 	@GET
 	public List<Survivor> getSurvivors(@BeanParam SurvivorFilterBean survivorFilterBean) {
 		if (survivorFilterBean.getStart() >= 0 && survivorFilterBean.getSize() > 0)
@@ -57,6 +68,12 @@ public class SurvivorResource {
 		return ss.getAllNonInfectedSurvivors();
 	}
 
+	/**
+	 * Get a designated survivor
+	 * @param survivorFilterBean filters path params on the uri
+	 * @param uriInfo create context to HATEOAS model
+	 * @return returns the designated survivor
+	 */
 	@GET
 	@Path("/{survivorId}")
 	public Survivor getSurvivor(@BeanParam SurvivorFilterBean survivorFilterBean, @Context UriInfo uriInfo) {
@@ -67,6 +84,9 @@ public class SurvivorResource {
 		survivor.addLink(getUriForTrade(uriInfo, survivor), "trade");
 		return survivor;
 	}
+		
+	//Below are methods for getting URIs and inserting on the survivor links
+	
 	
 	private String getUriForTrade(UriInfo uriInfo, Survivor survivor) {
 		URI uri = uriInfo.getBaseUriBuilder()
@@ -108,6 +128,12 @@ public class SurvivorResource {
 		return uri;
 	}
 
+	/**
+	 * Updates a survivor
+	 * @param survivorFilterBean filters path params
+	 * @param survivor survivor to be updated
+	 * @return updated survivor
+	 */
 	@PUT
 	@Path("/{survivorId}")
 	public Survivor updateSurvivor(@BeanParam SurvivorFilterBean survivorFilterBean, Survivor survivor) {
@@ -115,23 +141,39 @@ public class SurvivorResource {
 		return ss.updateSurvivor(survivor);
 	}
 
+	/**
+	 * Delete survivor
+	 * @param survivorFilterBean filter path params
+	 */
 	@DELETE
 	@Path("/{survivorId}")
 	public void deleteSurvivor(@BeanParam SurvivorFilterBean survivorFilterBean) {
 		ss.deleteSurvivor(survivorFilterBean.getSurvivorId());
 	}
 	
+	/**
+	 * Acess to reportinfected resource
+	 * @return instance of resource
+	 */
 	@Path("/{survivorId}/reportinfected")
 	public InfectedResource flagSurvivor() {
 		return new InfectedResource();
 	}
 	
+	/**
+	 *  Acess to trade resource
+	 * @return instance of resource
+	 */
 	@Path("/{survivorId}/trade")
 	public TradeResource trade() {
 		return new TradeResource();
 	}
 
-	
+	/**
+	 * Gets a designated surivor inventory
+	 * @param survivorFilterBean filters path parameters
+	 * @return returns the designated survivor's inventory
+	 */
 	@GET
 	@Path("/{survivorId}/inventories")
 	public Inventory getInventory(@BeanParam SurvivorFilterBean survivorFilterBean) {
