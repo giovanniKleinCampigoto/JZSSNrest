@@ -2,6 +2,14 @@
 This is a RESTfull API built in java, with the jersey and hibernate framework...
 The REST client used was POSTMan
 
+# Start Up Application
+
+- Install tomcat 8.5 or 9 server;
+- Have MySQL installed or install it;
+- Use the script under /db directory to generate the database and tables;
+- Place the zombierest.war file in the deployment folder into tomcat/webapps folder;
+- Start tomcat server in tomcat/bin, with the command ./startup.sh;
+- Acess the api using the endpoint http://localhost:8080/zombierest/webapi/survivors;
 
 Documentation (JAVADOC) on methods is avalible at /docs, index.html.
 
